@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "https://unpkg.com/three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js";
-import { Sky } from 'https://unpkg.com/three/examples/jsm/objects/Sky.js';
-import { GUI } from 'https://unpkg.com/three/examples/jsm/libs/lil-gui.module.min.js';
+import { Sky } from "https://unpkg.com/three/examples/jsm/objects/Sky.js";
+import { GUI } from "https://unpkg.com/three/examples/jsm/libs/lil-gui.module.min.js";
 
 class Map {
   constructor() {
@@ -20,8 +20,8 @@ class Map {
 
     //create sky and sun
     const sky = new Sky();
-		sky.scale.setScalar( 450000 );
-		this.scene.add( sky );
+    sky.scale.setScalar(450000);
+    this.scene.add(sky);
 
     const sun = new THREE.Vector3();
 
@@ -30,44 +30,58 @@ class Map {
       rayleigh: 3,
       mieCoefficient: 0.005,
       mieDirectionalG: 0.7,
-      elevation: 100,
+      elevation: 5,
       azimuth: 180,
-      exposure: this.renderer.toneMappingExpose
+      exposure: this.renderer.toneMappingExpose,
     };
 
     //implement gui
     function guiChanged() {
       const uniforms = sky.material.uniforms;
-      uniforms[ 'turbidity' ].value = effectController.turbidity;
-      uniforms[ 'rayleigh' ].value = effectController.rayleigh;
-      uniforms[ 'mieCoefficient' ].value = effectController.mieCoefficient;
-      uniforms[ 'mieDirectionalG' ].value = effectController.mieDirectionalG;
+      uniforms["turbidity"].value = effectController.turbidity;
+      uniforms["rayleigh"].value = effectController.rayleigh;
+      uniforms["mieCoefficient"].value = effectController.mieCoefficient;
+      uniforms["mieDirectionalG"].value = effectController.mieDirectionalG;
 
-      const phi = THREE.MathUtils.degToRad( 90 - effectController.elevation );
-      const theta = THREE.MathUtils.degToRad( effectController.azimuth );
+      const phi = THREE.MathUtils.degToRad(90 - effectController.elevation);
+      const theta = THREE.MathUtils.degToRad(effectController.azimuth);
 
-      sun.setFromSphericalCoords( 1, phi, theta );
+      sun.setFromSphericalCoords(1, phi, theta);
 
-      uniforms[ 'sunPosition' ].value.copy( sun );
-      
+      uniforms["sunPosition"].value.copy(sun);
+
       this.renderer.toneMappingExposure = effectController.exposure;
     }
 
     const gui = new GUI();
 
-    gui.add( effectController, 'turbidity', 0.0, 20.0, 0.1 ).onChange( guiChanged.bind(this) );
-    gui.add( effectController, 'rayleigh', 0.0, 4, 0.001 ).onChange( guiChanged.bind(this) );
-    gui.add( effectController, 'mieCoefficient', 0.0, 0.1, 0.001 ).onChange( guiChanged.bind(this) );
-    gui.add( effectController, 'mieDirectionalG', 0.0, 1, 0.001 ).onChange( guiChanged.bind(this) );
-    gui.add( effectController, 'elevation', 0, 90, 0.1 ).onChange( guiChanged.bind(this) );
-    gui.add( effectController, 'azimuth', - 180, 180, 0.1 ).onChange( guiChanged.bind(this) );
-    gui.add( effectController, 'exposure', 0, 1, 0.0001 ).onChange( guiChanged.bind(this) );
+    gui
+      .add(effectController, "turbidity", 0.0, 20.0, 0.1)
+      .onChange(guiChanged.bind(this));
+    gui
+      .add(effectController, "rayleigh", 0.0, 4, 0.001)
+      .onChange(guiChanged.bind(this));
+    gui
+      .add(effectController, "mieCoefficient", 0.0, 0.1, 0.001)
+      .onChange(guiChanged.bind(this));
+    gui
+      .add(effectController, "mieDirectionalG", 0.0, 1, 0.001)
+      .onChange(guiChanged.bind(this));
+    gui
+      .add(effectController, "elevation", 0, 90, 0.1)
+      .onChange(guiChanged.bind(this));
+    gui
+      .add(effectController, "azimuth", -180, 180, 0.1)
+      .onChange(guiChanged.bind(this));
+    gui
+      .add(effectController, "exposure", 0, 1, 0.0001)
+      .onChange(guiChanged.bind(this));
 
     guiChanged.bind(this)();
 
     //load model
     const loader = new GLTFLoader();
-    loader.load("../assets/just_a_girl/scene.gltf", (uwu) => {
+    loader.load("https://raw.githubusercontent.com/Assxios/threejs_a_girl/main/assets/just_a_girl/scene.gltf", (uwu) => {
       this.gltf = uwu.scene;
       this.gltf.position.y = -75;
       this.scene.add(uwu.scene);
@@ -83,8 +97,7 @@ class Map {
     this.camera.position.set(400, 200, 0);
 
     //create controls
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    ;
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     this.controls.dampingFactor = 0.05;
 
